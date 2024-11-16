@@ -17,36 +17,80 @@ let db;
     driver: sqlite3.Database
   });
 
-  // Create a 'users' table if it doesn't exist
+  // Create a 'Greetings' table if it doesn't exist
   await db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
+    CREATE TABLE IF NOT EXISTS Greetings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      email TEXT NOT NULL UNIQUE
+      timeOfDay TEXT NOT NULL,
+      language TEXT NOT NULL,
+      greetingMessage TEXT NOT NULL,
+      tone TEXT NOT NULL
     )
   `);
+
+  // Seed
+  const greetings = [
+    ['Morning', 'English', 'Good Morning', 'Formal'],
+    ['Morning', 'English', 'Hi! Good Morning!', 'Casual'],
+    ['Afternoon', 'English', 'Good Afternoon', 'Formal'],
+    ['Afternoon', 'English', 'Hey! Good Afternoon!', 'Casual'],
+    ['Evening', 'English', 'Good Evening', 'Formal'],
+    ['Evening', 'English', 'Hey! Good Evening!', 'Casual'],
+
+    ['Morning', 'French', 'Bonjour', 'Formal'],
+    ['Morning', 'French', 'Salut, Bonjour', 'Casual'],
+    ['Afternoon', 'French', 'Bon Après-midi', 'Formal'],
+    ['Afternoon', 'French', 'Salut! Bon Après-midi!', 'Casual'],
+    ['Evening', 'French', 'Bonsoir', 'Formal'],
+    ['Evening', 'French', 'Salut! Bonsoir!', 'Casual'],
+
+    ['Morning', 'Spanish', 'Buenos Días', 'Formal'],
+    ['Morning', 'Spanish', 'Hola! Buenos Días!', 'Casual'],
+    ['Afternoon', 'Spanish', 'Buenas Tardes', 'Formal'],
+    ['Afternoon', 'Spanish', 'Hola, Buenas!', 'Casual'],
+    ['Evening', 'Spanish', 'Buenas Noches', 'Formal'],
+    ['Evening', 'Spanish', 'Hola! Buenas Noches!', 'Casual'],
+  ];
+
+  const stmt = await db.prepare('INSERT INTO Greetings (timeOfDay, language, greetingMessage, tone) VALUES (?, ?, ?, ?)');
+  for (const greeting of greetings) {
+    await stmt.run(greeting);
+  }
+  await stmt.finalize();
 })();
 
-// GET all users
-app.get('/api/users', async (req, res) => {
+app.post('/api/WRgreet', async (req, res) => {
+  const { timeOfDay, language, tone } = req.body;
+  
   try {
-    const users = await db.all('SELECT * FROM users');
-    res.json({ message: 'success', data: users });
+    const row = await db.get(
+      "SELECT greetingMessage FROM Greetings WHERE timeOfDay = ? AND language = ? AND tone = ?",
+      [timeOfDay, language, tone]
+    );
+    
+    if (row) {
+      res.json({ greetingMessage: row.greetingMessage });
+    } else {
+      res.status(404).send('Your Greeting could not be found');
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// POST a new user
-app.post('/api/users', async (req, res) => {
-  const { name, email } = req.body;
-  if (!name || !email) {
-    return res.status(400).json({ error: 'Name and email are required' });
-  }
-
+app.get('/api/WRtimesOfDay', async (req, res) => {
   try {
-    const result = await db.run('INSERT INTO users (name, email) VALUES (?, ?)', [name, email]);
-    res.json({ message: 'success', data: { id: result.lastID, name, email } });
+    const rows = await db.all("SELECT DISTINCT timeOfDay FROM Greetings");
+    res.json(rows.map(row => row.timeOfDay));
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/WRlanguages', async (req, res) => {
+  try {
+    const rows = await db.all("SELECT DISTINCT language FROM Greetings");
+    res.json(rows.map(row => row.language));
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

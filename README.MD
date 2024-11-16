@@ -2,6 +2,8 @@
 
 <strong> Student#:8820728 </strong>
 
+It may take a second for the terminal to show you the cosnole for usig api (:
+
 Dotnet run for the console
 node server.js for the Node API to run (:
  

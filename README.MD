@@ -1,5 +1,12 @@
+<strong> Name: Wesam Rabee </strong>
 
+<strong> Student#:8820728 </strong>
 
+Dotnet run for the console
+node server.js for the Node API to run (:
+ 
+         |
+URL LINK V
 ```bash
 http://localhost:3000
 ```

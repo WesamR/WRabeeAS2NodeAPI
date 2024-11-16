@@ -2,13 +2,14 @@
 
 <strong> Student#:8820728 </strong>
 
+<strong> Discord: </strong> https://github.com/WesamR/WRabeeAS2NodeAPI
+
 It may take a second for the terminal to show you the cosnole for usig api (:
 
 Dotnet run for the console
 node server.js for the Node API to run (:
  
-         |
-URL LINK V
+URL LINK
 ```bash
 http://localhost:3000
 ```

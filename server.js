@@ -50,6 +50,14 @@ let db;
     ['Afternoon', 'Spanish', 'Hola, Buenas!', 'Casual'],
     ['Evening', 'Spanish', 'Buenas Noches', 'Formal'],
     ['Evening', 'Spanish', 'Hola! Buenas Noches!', 'Casual'],
+
+    ['Morning', 'Arabic', 'Marhaba, Sabah', 'Casual'],
+    ['Afternoon', 'Arabic', 'Marhaba, Masa', 'Casual'],
+    ['Evening', 'Arabic', 'Marhaba, Masa', 'Casual'],
+    ['Morning', 'Arabic', 'Sabah Al-Khair', 'Formal'],
+    ['Afternoon', 'Arabic', 'Masa\' Alkhayr', 'Formal'],
+    ['Evening', 'Arabic', 'Masa\' Alkhayr', 'Formal']
+    
   ];
 
   const stmt = await db.prepare('INSERT INTO Greetings (timeOfDay, language, greetingMessage, tone) VALUES (?, ?, ?, ?)');
